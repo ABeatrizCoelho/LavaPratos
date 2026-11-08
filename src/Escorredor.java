@@ -1,12 +1,5 @@
 import java.util.logging.Logger;
 
-/**
- * Buffer limitado implementado como fila FIFO circular (sem usar Collections).
- *
- * Os métodos NÃO são synchronized: quem chama (Lavador/Enxugador) já deve
- * estar dentro de um bloco synchronized (escorredor), porque precisa
- * verificar e alterar o escorredor de forma atômica e usar wait/notify.
- */
 public class Escorredor {
 
     private static final Logger LOGGER = Logger.getLogger(Escorredor.class.getName());

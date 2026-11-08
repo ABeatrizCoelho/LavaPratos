@@ -1,8 +1,6 @@
 import java.util.logging.Logger;
 
-/**
- * Produtor: pega um prato sujo (pilha infinita), lava e coloca no escorredor.
- */
+
 public class Lavador implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(Lavador.class.getName());
@@ -13,7 +11,7 @@ public class Lavador implements Runnable {
 
     private final String nome;
     private final Escorredor escorredor;
-    private volatile boolean done = false; // volatile: lida por outra thread (App)
+    private volatile boolean done = false;
 
     public Lavador(String nome, Escorredor escorredor) {
         this.nome = nome;
@@ -34,7 +32,7 @@ public class Lavador implements Runnable {
                 if (done) {
                     break;
                 }
-                Prato prato = new Prato(); // pilha de pratos sujos "infinita"
+                Prato prato = new Prato();
                 lavar(prato);
                 guardar(prato);
             }
@@ -44,7 +42,7 @@ public class Lavador implements Runnable {
         LOGGER.fine(nome + " terminou");
     }
 
-    /** Só segue adiante quando existe espaço livre no escorredor. */
+
     private void esperarEspaco() throws InterruptedException {
         synchronized (escorredor) {
             while (escorredor.estaCheio() && !done) {
@@ -68,22 +66,17 @@ public class Lavador implements Runnable {
                 break;
         }
         LOGGER.fine(nome + " lavando " + prato);
-        Simulacao.contarAte(limite); // lavar fora do synchronized: não trava os outros
+        Simulacao.contarAte(limite);
         LOGGER.fine(nome + " terminou de lavar " + prato);
     }
 
     private void guardar(Prato prato) throws InterruptedException {
         synchronized (escorredor) {
-            // Outro lavador pode ter ocupado a vaga enquanto eu lavava,
-            // por isso confirmo de novo antes de colocar.
             while (escorredor.estaCheio()) {
                 LOGGER.fine(nome + " aguardando para guardar " + prato);
                 escorredor.wait();
             }
             escorredor.colocar(prato);
-
-            // Notifica só quando o escorredor estava vazio (agora tem 1 prato):
-            // acorda um enxugador que estava descansando.
             if (escorredor.getQuantidade() == 1) {
                 escorredor.notify();
             }

@@ -1,10 +1,7 @@
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Representa um prato sujo. O número de série é sequencial e o nível de
- * sujeira é sorteado no construtor (30% BAIXO, 60% MEDIO, 10% ENGORDURADO).
- */
+
 public class Prato {
 
     public enum NivelSujeira {
