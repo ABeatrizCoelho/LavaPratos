@@ -4,12 +4,19 @@ public class Escorredor {
 
     private static final Logger LOGGER = Logger.getLogger(Escorredor.class.getName());
 
+    // Monitores separados evitam acordar o tipo errado de trabalhador.
+    private final Object monitorVagas = new Object();
+    private final Object monitorPratos = new Object();
     private final Prato[] pratos;
     private int inicio;     // posição do próximo prato a sair
     private int fim;        // posição onde o próximo prato vai entrar
     private int quantidade; // quantos pratos há no escorredor agora
 
+    public Object getMonitorVagas() { return monitorVagas; }
+    public Object getMonitorPratos() { return monitorPratos; }
+
     public Escorredor(int capacidade) {
+        if (capacidade <= 0) throw new IllegalArgumentException("Capacidade deve ser positiva");
         this.pratos = new Prato[capacidade];
     }
 

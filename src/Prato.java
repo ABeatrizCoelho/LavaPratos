@@ -1,15 +1,12 @@
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 public class Prato {
 
     public enum NivelSujeira {
         BAIXO, MEDIO, ENGORDURADO
     }
 
-    // AtomicInteger: vários lavadores criam pratos ao mesmo tempo, então o
-    // contador precisa ser seguro para uso concorrente.
     private static final AtomicInteger CONTADOR = new AtomicInteger(0);
     private static final Random RANDOM = new Random();
 

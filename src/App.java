@@ -4,6 +4,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 public class App {
 
     private static final Logger LOGGER = Logger.getLogger(App.class.getName());
@@ -21,6 +22,9 @@ public class App {
     private final List<Thread> threadsEnxugadores = new ArrayList<>();
 
     public App(int capacidade, int qtdLavadores, int qtdEnxugadores) {
+        if (qtdLavadores <= 0 || qtdEnxugadores <= 0) {
+            throw new IllegalArgumentException("As quantidades de trabalhadores devem ser positivas");
+        }
         this.escorredor = new Escorredor(capacidade);
         this.qtdLavadores = qtdLavadores;
         this.qtdEnxugadores = qtdEnxugadores;
@@ -49,14 +53,14 @@ public class App {
     public void parar() throws InterruptedException {
         LOGGER.info("Encerrando os trabalhos...");
 
-        // 1º: para os lavadores (ninguem coloca mais pratos no escorredor)
+        // 1º: para os lavadores (ninguém coloca mais pratos no escorredor)
         lavadores.forEach(Lavador::parar);
         threadsLavadores.forEach(Thread::interrupt); // acorda quem está no wait()
         for (Thread thread : threadsLavadores) {
             thread.join();
         }
 
-        // 2º: os enxugadores esvaziam o escorredor e só entao terminam
+        // 2º: os enxugadores esvaziam o escorredor e só então terminam
         enxugadores.forEach(Enxugador::parar);
         threadsEnxugadores.forEach(Thread::interrupt);
         for (Thread thread : threadsEnxugadores) {

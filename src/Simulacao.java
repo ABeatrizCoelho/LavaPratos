@@ -1,4 +1,3 @@
-
 public final class Simulacao {
 
 
@@ -10,6 +9,7 @@ public final class Simulacao {
     public static void contarAte(long limite) {
         long acumulador = 0;
         for (long i = 0; i < limite; i++) {
+
             acumulador = acumulador * 31 + i;
         }
         resultado = acumulador;
