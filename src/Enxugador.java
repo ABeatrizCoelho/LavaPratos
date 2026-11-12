@@ -1,9 +1,6 @@
 import java.util.Random;
 import java.util.logging.Logger;
 
-/**
- * Consumidor: retira pratos do escorredor e enxuga.
- */
 public class Enxugador implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(Enxugador.class.getName());
