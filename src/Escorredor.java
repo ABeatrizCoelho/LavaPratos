@@ -1,18 +1,24 @@
 import java.util.logging.Logger;
 
+/**
+ * Buffer limitado implementado como fila FIFO circular (sem usar Collections).
+ *
+ * Os métodos NÃO são synchronized: quem chama (Lavador/Enxugador) já deve
+ * estar dentro de um bloco synchronized (escorredor), porque precisa
+ * verificar e alterar o escorredor de forma atômica e usar wait/notify.
+ */
 public class Escorredor {
 
     private static final Logger LOGGER = Logger.getLogger(Escorredor.class.getName());
 
-
     private final Object monitorVagas = new Object();
     private final Object monitorPratos = new Object();
-    private final Prato[] pratos;
-    private int inicio;
-    private int fim;
-    private int quantidade;
     public Object getMonitorVagas() { return monitorVagas; }
     public Object getMonitorPratos() { return monitorPratos; }
+    private final Prato[] pratos;
+    private int inicio;     // posição do próximo prato a sair
+    private int fim;        // posição onde o próximo prato vai entrar
+    private int quantidade; // quantos pratos há no escorredor agora
 
     public Escorredor(int capacidade) {
         if (capacidade <= 0) throw new IllegalArgumentException("Capacidade deve ser positiva");

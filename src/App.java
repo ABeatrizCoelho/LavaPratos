@@ -4,11 +4,15 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
+/**
+ * Cria e controla a aplicação Lavador de Pratos.
+ * Uso: java App [capacidade] [qtdLavadores] [qtdEnxugadores]
+ */
 public class App {
 
     private static final Logger LOGGER = Logger.getLogger(App.class.getName());
 
+    // Durante o desenvolvimento use Level.FINE; para entregar, Level.INFO.
     private static final Level NIVEL_LOG = Level.INFO;
     private static final long TEMPO_EXECUCAO_MS = 60_000; // 1 minuto
 
@@ -22,9 +26,6 @@ public class App {
     private final List<Thread> threadsEnxugadores = new ArrayList<>();
 
     public App(int capacidade, int qtdLavadores, int qtdEnxugadores) {
-        if (qtdLavadores <= 0 || qtdEnxugadores <= 0) {
-            throw new IllegalArgumentException("As quantidades de trabalhadores devem ser positivas");
-        }
         this.escorredor = new Escorredor(capacidade);
         this.qtdLavadores = qtdLavadores;
         this.qtdEnxugadores = qtdEnxugadores;
@@ -67,8 +68,10 @@ public class App {
             thread.join();
         }
 
-        LOGGER.info("Trabalhos encerrados. Pratos no escorredor: "
-                + escorredor.getQuantidade());
+        synchronized (escorredor) {
+            LOGGER.info("Trabalhos encerrados. Pratos no escorredor: "
+                    + escorredor.getQuantidade());
+        }
     }
 
     private static void configurarLog(Level nivel) {

@@ -1,6 +1,5 @@
 import java.util.logging.Logger;
 
-
 public class Lavador implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(Lavador.class.getName());
     private static final long CONTAGEM_BAIXO = 30_000_000L;
@@ -27,8 +26,7 @@ public class Lavador implements Runnable {
                 if (done) break;
                 Prato prato = new Prato();
                 lavar(prato);
-                // Um prato que já começou a ser lavado deve ser guardado,
-                // mesmo se a parada for solicitada durante a lavagem.
+                // Depois de iniciar a lavagem, sempre guardar o prato.
                 guardar(prato);
             }
         } catch (InterruptedException e) {
@@ -38,14 +36,14 @@ public class Lavador implements Runnable {
     }
 
     private void esperarEspaco() throws InterruptedException {
-        Object vaga = escorredor.getMonitorVagas();
-        synchronized (vaga) {
+        Object vagas = escorredor.getMonitorVagas();
+        synchronized (vagas) {
             while (!done) {
                 synchronized (escorredor) {
                     if (!escorredor.estaCheio()) return;
                 }
                 LOGGER.fine(nome + " aguardando: escorredor cheio");
-                vaga.wait();
+                vagas.wait();
             }
         }
     }
@@ -63,12 +61,12 @@ public class Lavador implements Runnable {
     }
 
     private void guardar(Prato prato) {
-        Object vaga = escorredor.getMonitorVagas();
+        Object vagas = escorredor.getMonitorVagas();
         Object pratos = escorredor.getMonitorPratos();
         boolean interrompido = false;
         boolean guardado = false;
         while (!guardado) {
-            synchronized (vaga) {
+            synchronized (vagas) {
                 synchronized (pratos) {
                     synchronized (escorredor) {
                         if (!escorredor.estaCheio()) {
@@ -80,7 +78,7 @@ public class Lavador implements Runnable {
                     }
                 }
                 if (!guardado) {
-                    try { vaga.wait(); }
+                    try { vagas.wait(); }
                     catch (InterruptedException e) { interrompido = true; }
                 }
             }
