@@ -4,10 +4,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Cria e controla a aplicação Lavador de Pratos.
- * Uso: java App [capacidade] [qtdLavadores] [qtdEnxugadores]
- */
+
 public class App {
 
     private static final Logger LOGGER = Logger.getLogger(App.class.getName());
@@ -54,14 +51,14 @@ public class App {
     public void parar() throws InterruptedException {
         LOGGER.info("Encerrando os trabalhos...");
 
-        // 1º: para os lavadores (ninguém coloca mais pratos no escorredor)
+        
         lavadores.forEach(Lavador::parar);
         threadsLavadores.forEach(Thread::interrupt); // acorda quem está no wait()
         for (Thread thread : threadsLavadores) {
             thread.join();
         }
 
-        // 2º: os enxugadores esvaziam o escorredor e só então terminam
+        //os enxugadores esvaziam o escorredor e só então terminam
         enxugadores.forEach(Enxugador::parar);
         threadsEnxugadores.forEach(Thread::interrupt);
         for (Thread thread : threadsEnxugadores) {
